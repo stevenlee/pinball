@@ -17,7 +17,7 @@ int SER = 11;
 
 int calc(int val) {
   int data;
-  data = (1 << val - 1)
+  data = (1 << val - 1);
   return data;
 }
 
@@ -34,7 +34,7 @@ void loop() {
   for (int i = 0; i < 8; i++) {
     data = calc(i);
     digitalWrite(RCLK, LOW);
-    shiftOut(dataPin, SRCLK, MSBFIRST, data);
+    shiftOut(SER, SRCLK, MSBFIRST, data);
     digitalWrite(RCLK, HIGH);
     delay(500);
   }
