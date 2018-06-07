@@ -3,11 +3,11 @@
 
   Use 74HC595 to control LED
 
-  
+
 */
 
 // 74HC595 OE_BAR => GND
-// 74HC595 SRCLK_BAR => 5V
+// 74HC595 SRCLR_BAR => 5V
 // 74HC595 RCLK
 int RCLK = 8;
 // 74HC595 SRCLK
