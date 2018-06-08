@@ -3,7 +3,7 @@
 
   Use 74HC595 to control LED
 
-  
+
 */
 
 // 74HC595 OE_BAR => GND
@@ -15,27 +15,63 @@ int SRCLK = 12;
 ////Pin connected to DS of 74HC595
 int SER = 11;
 
-int calc(int val) {
-  int data;
-  data = (1 << val - 1);
-  return data;
+const byte EXT_INT = 2;
+
+unsigned long lastDebounceTime = 0;
+unsigned long debounceDelay = 5; //ms
+
+
+int value = 0;
+int old_value = 0;
+void addone() {
+  /* No debounce
+  if(value < 255) {
+    value ++;
+  } else {
+    value = 0;
+  }
+*/
+  /* Debounce Logic */
+  unsigned long currentTime = millis();
+  if((digitalRead(EXT_INT)==HIGH) && ((currentTime - lastDebounceTime) > debounceDelay)) {
+    lastDebounceTime = currentTime;
+    if(value < 255) {
+      value ++;
+    } else {
+      value = 0;
+    }
+  }
+
 }
+// int calc(int val) {
+//   int data;
+//   data = (1 << val - 1);
+//   return data;
+// }
 
 void setup() {
   //set pins to output so you can control the shift register
   pinMode(RCLK, OUTPUT);
   pinMode(SRCLK, OUTPUT);
   pinMode(SER, OUTPUT);
+  pinMode(EXT_INT, INPUT);
+  attachInterrupt(digitalPinToInterrupt(EXT_INT), addone, RISING);
 }
 
 void loop() {
-
-  int data;
-  for (int i = 0; i < 8; i++) {
-    data = calc(i);
+  if(value != old_value) {
+    old_value = value;
     digitalWrite(RCLK, LOW);
-    shiftOut(SER, SRCLK, MSBFIRST, data);
+    shiftOut(SER, SRCLK, MSBFIRST, value);
     digitalWrite(RCLK, HIGH);
-    delay(500);
   }
+
+  // int data;
+  // for (int i = 0; i < 8; i++) {
+  //   data = calc(i);
+  //   digitalWrite(RCLK, LOW);
+  //   shiftOut(SER, SRCLK, MSBFIRST, data);
+  //   digitalWrite(RCLK, HIGH);
+  //   delay(500);
+  // }
 }
