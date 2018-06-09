@@ -22,21 +22,23 @@ unsigned long debounceDelay = 5; //ms
 
 
 int value = 0;
-int old_value = 0;
+int old_value = 255;
 void addone() {
+  // int val;
+  // val = digitalRead(EXT_INT);
   /* No debounce
   if(value < 255) {
     value ++;
   } else {
     value = 0;
   }
-*/
+  */
   /* Debounce Logic */
   unsigned long currentTime = millis();
-  if((digitalRead(EXT_INT)==HIGH) && ((currentTime - lastDebounceTime) > debounceDelay)) {
+  if((currentTime - lastDebounceTime) > debounceDelay) {
     lastDebounceTime = currentTime;
     if(value < 255) {
-      value ++;
+      value = value + 1;
     } else {
       value = 0;
     }
@@ -55,7 +57,7 @@ void setup() {
   pinMode(SRCLK, OUTPUT);
   pinMode(SER, OUTPUT);
   pinMode(EXT_INT, INPUT);
-  attachInterrupt(digitalPinToInterrupt(EXT_INT), addone, RISING);
+  attachInterrupt(digitalPinToInterrupt(EXT_INT), addone, LOW);
 }
 
 void loop() {
