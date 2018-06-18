@@ -9,11 +9,13 @@
 // 74HC595 OE_BAR => GND
 // 74HC595 SRCLR_BAR => 5V
 // 74HC595 RCLK
-int RCLK = 8;
-// 74HC595 SRCLK
-int SRCLK = 12;
+const byte  SER = 9;
+const byte  OE_BAR = 10;
+const byte  RCLK = 11;
+const byte  SRCLK = 12;
+const byte  SRCLR_BAR = 13;
+
 ////Pin connected to DS of 74HC595
-int SER = 11;
 
 const byte EXT_INT = 2;
 
@@ -53,9 +55,12 @@ void addone() {
 
 void setup() {
   //set pins to output so you can control the shift register
+  pinMode(SER, OUTPUT);
+  pinMode(OE_BAR, OUTPUT);
   pinMode(RCLK, OUTPUT);
   pinMode(SRCLK, OUTPUT);
-  pinMode(SER, OUTPUT);
+  pinMode(SRCLR_BAR, OUTPUT);
+
   pinMode(EXT_INT, INPUT);
   attachInterrupt(digitalPinToInterrupt(EXT_INT), addone, LOW);
 }
@@ -67,6 +72,9 @@ void loop() {
     shiftOut(SER, SRCLK, MSBFIRST, value);
     digitalWrite(RCLK, HIGH);
   }
+
+
+  // delay(500)
 
   // int data;
   // for (int i = 0; i < 8; i++) {
